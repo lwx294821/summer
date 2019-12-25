@@ -1,0 +1,32 @@
+# GateWays 控制流量进出服务网格
+# GateWays是用于在网格边缘运行的独立Envoy代理，而不是与服务工作负载一起运行的Sidecar Envoy代理
+#
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ext-host-gwy
+spec:
+  selector:
+    app: my-gateway-controller
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - ext-host.example.com
+      tls:
+        mode: SIMPLE
+        serverCertificate: /tmp/tls.crt
+        privateKey: /tmp/tls.key
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: virtual-svc
+spec:
+  hosts:
+    - ext-host.example.com
+  gateways:
+    - ext-host-gwy

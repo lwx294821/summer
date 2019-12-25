@@ -1,0 +1,21 @@
+### download istio ###
+---
+install:
+  - curl -L https://istio.io/downloadIstio | sh -
+  - cd istio-1.4.2
+  - export PATH=$PWD/bin:$PATH
+  # 类似helm修改默认配置的方式：依赖chart名称作前缀加上对应chart包中values.yaml文件中参数路径 #
+  - "istioctl manifest apply --set profile=demo --set hub=<private-registry-url> \
+     --set .values.kiali.dashboard.jaegerURL=http://jaeger-query:16686 \
+     ...
+  "
+### app deploy command ###
+extend:
+  - istioctl manifest generate --set profile=demo --set hub=<private-registry-url>
+  - istioctl kube-inject -f <your-app-spec>.yaml | kubectl apply -f -
+
+### remove all istio resource ###
+uninstall:
+  - istioctl manifest generate --set profile=demo | kubectl delete -f -
+
+

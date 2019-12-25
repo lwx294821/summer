@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fruit almond</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <style>
+        .classList {
+            width: 100%;
+            margin: 0;
+        }
+
+        .selected {
+            background: #707070;
+            color: white;
+            padding-left: 9px;
+        }
+
+        #sections li {
+            color: #707070;
+            padding-left: 9px;
+        }
+
+        .navbar-default .navbar-nav > li > a {
+            color: #707070;
+        }
+    </style>
+</head>
+<body onload="init()">
+<div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-2">
+            <div class="sidebar-nav">
+                <div class="navbar navbar-default" role="navigation">
+                    <ul id="sections" class="classList av navbar-nav">
+                        <li class="selected"><a href="index.html" style="color: white">动态跟踪</a></li>
+                        <li><a href="./html/memorandum.html">任务结构</a></li>
+                        <li><a href="./html/mindmap.html">思维导向</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div id="myDiagramDiv"
+                 style="border: 1px solid black; width: 100%; height: 460px; background: whitesmoke; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <button id="SaveButton" onclick="save()" class="btn btn-sm " style="line-height: 0.8" >Save</button>
+                <button onclick="load()" class="btn btn-sm" style="line-height: 0.8">Load</button>
+                <button onclick="layout()" class="btn btn-sm" style="line-height: 0.8">Do Layout</button>
+            </div>
+            <textarea id="mySavedModel" style="width:100%;height:300px">
+                { "class": "GraphLinksModel",
+  "nodeKeyProperty": "id",
+  "nodeDataArray": [
+{"id":-1, "loc":"155 -138", "category":"Start"},
+{"id":0, "loc":"190 15", "text":"Kubernetes"},
+{"id":1, "loc":"353 32", "text":"MicroService"},
+{"id":2, "loc":"353 166", "text":"Istio"},
+{"id":3, "loc":"512 12", "text":"Ceph"},
+{"id":4, "loc":"661 17", "text":"Rook"},
+{"id":5, "loc":"644 171", "text":"Update Cart"},
+{"id":6, "loc":"800 96", "text":"Checkout"},
+{"id":-2, "loc":"757 229", "category":"End"},
+{"text":"Calico", "loc":"196 145", "id":-10},
+{"text":"Envoy", "loc":"407 228", "id":-11},
+{"text":"Mixer", "loc":"303 242", "id":-12},
+{"text":"Pilot", "loc":"553 166", "id":-13}
+ ],
+  "linkDataArray": [
+{"from":-1, "to":0, "text":"call", "points":[200.9629729076036,-63.96743795509042,207.28009415140457,-36.69798710088425,206.78172806502616,-10.695691829847046,196.16932689972282,15]},
+{"from":0, "to":1, "progress":"true", "text":"controller", "points":[233.13088989257812,23.58776842131578,259.75928623805066,19.720569581025238,284.65139887594574,22.80417513541727,310.48312824411306,32]},
+{"from":0, "to":2, "progress":"true", "text":"Use search bar", "points":[214.19571045593858,44.875448608398436,260.5816761145265,73.5127877703892,304.1651239662507,113.88763823425634,342.1203433525658,166]},
+{"from":1, "to":2, "progress":"true", "text":"Use search bar", "points":[357.8141649132298,61.875448608398436,369,96.58363240559896,369,131.29181620279948,357.8141649132298,166]},
+{"from":2, "to":3, "progress":"true", "text":"Click item", "points":[363.3562716443014,166,400.4310284969791,112.85488777903853,443.5327723235191,71.23210564611688,490.0532397856068,41.13737912967409]},
+{"from":1, "to":3, "progress":"true", "text":"Click item", "points":[400.59104774140803,32.28376280540319,433.0578188595279,22.559195339886195,460.27222864312824,19.881558887032437,489.4257507324219,23.853338992342394]},
+{"from":3, "to":0, "text":"storage", "curviness":-100, "points":[493.78291884633757,12,391.41132758690804,-71.94311876401206,307.7139093740174,-71.16332915333295,207.39228093935913,15]},
+{"from":3, "to":4, "progress":"true", "text":"Add to cart", "points":[534.5742492675781,23.034935435022362,569.5339828636667,17.737010371688335,603.782464431392,19.01551521238644,637.3173522949219,26.39866473942613]},
+{"from":4, "to":0, "text":"storage", "curviness":-150, "points":[644.0854793159202,17,490.3274607162677,-118.78835216792928,357.9562626978758,-119.35043793446172,206.8056482826393,15]},
+{"from":4, "to":5, "text":"Update needed", "curviness":-50, "points":[644.5669247272259,46.875448608398436,605.0855671518103,82.76414410985251,600.5182135291756,124.13899457371969,633.4897687802329,171]},
+{"from":5, "to":4, "text":"Update made", "points":[664.6790518643737,171,712.4464777765854,136.49471205557663,717.0138313992202,95.11986159170944,674.2429703486598,46.87544860839843]},
+{"from":4, "to":6, "progress":"true", "text":"Proceed", "points":[684.6826477050781,38.4422164510964,711.8301824514912,45.982444270488195,745.1542764645721,63.74014315645685,782.9030694081566,96]},
+{"from":6, "to":5, "text":"Update needed", "points":[781.3530739897307,125.87544860839843,744.5758887736412,155.3370045313352,713.2895331421308,170.37852166186903,690.4740676879883,175.5018127894324]},
+{"from":6, "to":-2, "progress":"true", "text":"Purchase made", "points":[804.2658835196867,125.87544860839844,814.2462568168316,160.82344099443833,813.0306368608703,195.2060967636338,803.9335142295586,230.20593975206526]},
+{"from":-10, "to":0, "points":[190.28148566837191,145,177.7872030992795,112.36282580186723,176.24682538556254,78.98797533800004,185.8116191789435,44.87544860839843], "text":"network"},
+{"from":2, "to":-11, "text":"transition", "points":[373.70398712158203,187.13190505283924,393.64985026896017,193.49839834743383,404.57025723156033,207.05343598357018,406.2103573177809,228]},
+{"from":2, "to":-12, "text":"transition", "points":[353.73191264892904,195.87544860839844,355.2269444694976,217.37152374568115,346.60120814854685,233.32647207690857,327.56892480604256,243.5838294888209]},
+{"from":2, "to":-13, "text":"transition", "points":[373.70398712158203,176.4761175599499,425.6358472243061,164.5974183160112,477.6418983873985,164.2568724610402,529.724235534668,175.78028140726622]}
+ ]}
+
+   </textarea>
+        </div>
+    </div>
+
+</div>
+</div>
+<script src="js/go.js"></script>
+<script>
+      function init() {
+
+        let $ = go.GraphObject.make;  // for conciseness in defining templates
+
+        // some constants that will be reused within templates
+        let roundedRectangleParams = {
+            parameter1: 2,  // set the rounded corner
+            spot1: go.Spot.TopLeft, spot2: go.Spot.BottomRight  // make content go all the way to inside edges of rounded corners
+        };
+
+        myDiagram =
+            $(go.Diagram, "myDiagramDiv",  // must name or refer to the DIV HTML element
+                {
+                    "animationManager.initialAnimationStyle": go.AnimationManager.None,
+                    "InitialAnimationStarting": function (e) {
+                        let animation = e.subject.defaultAnimation;
+                        animation.easing = go.Animation.EaseOutExpo;
+                        animation.duration = 900;
+                        animation.add(e.diagram, 'scale', 0.1, 1);
+                        animation.add(e.diagram, 'opacity', 0, 1);
+                    },
+
+                    // have mouse wheel events zoom in and out instead of scroll up and down
+                    "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom,
+                    // support double-click in background creating a new node
+                    "clickCreatingTool.archetypeNodeData": {text: "new node"},
+                    // enable undo & redo
+                    "undoManager.isEnabled": true,
+                    positionComputation: function (diagram, pt) {
+                        return new go.Point(Math.floor(pt.x), Math.floor(pt.y));
+                    }
+                });
+
+        // when the document is modified, add a "*" to the title and enable the "Save" button
+        myDiagram.addDiagramListener("Modified", function (e) {
+            let button = document.getElementById("SaveButton");
+            if (button) button.disabled = !myDiagram.isModified;
+            let idx = document.title.indexOf("*");
+            if (myDiagram.isModified) {
+                if (idx < 0) document.title += "*";
+            } else {
+                if (idx >= 0) document.title = document.title.substr(0, idx);
+            }
+        });
+
+        // define the Node template
+        myDiagram.nodeTemplate =
+            $(go.Node, "Auto",
+                {
+                    locationSpot: go.Spot.TopCenter,
+                    isShadowed: true, shadowBlur: 1,
+                    shadowOffset: new go.Point(0, 1),
+                    shadowColor: "rgba(0, 0, 0, .14)"
+                },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                // define the node's outer shape, which will surround the TextBlock
+                $(go.Shape, "RoundedRectangle", roundedRectangleParams,
+                    {
+                        name: "SHAPE", fill: "#ffffff", strokeWidth: 0,
+                        stroke: null,
+                        portId: "",  // this Shape is the Node's port, not the whole Node
+                        fromLinkable: true, fromLinkableSelfNode: true, fromLinkableDuplicates: true,
+                        toLinkable: true, toLinkableSelfNode: true, toLinkableDuplicates: true,
+                        cursor: "pointer"
+                    }),
+                $(go.TextBlock,
+                    {
+                        font: "bold 11pt helvetica, bold arial, sans-serif",
+                        margin: 7,
+                        stroke: "rgba(0, 0, 0, .87)",
+                        editable: true  // editing the text automatically updates the model data
+                    },
+                    new go.Binding("text").makeTwoWay())
+            );
+
+
+        // unlike the normal selection Adornment, this one includes a Button
+        myDiagram.nodeTemplate.selectionAdornmentTemplate =
+            $(go.Adornment, "Spot",
+                $(go.Panel, "Auto",
+                    $(go.Shape, "RoundedRectangle", roundedRectangleParams,
+                        {fill: null, stroke: "#7986cb", strokeWidth: 3}),
+                    $(go.Placeholder)  // a Placeholder sizes itself to the selected Node
+                ),
+                // the button to create a "next" node, at the top-right corner
+                $("Button",
+                    {
+                        alignment: go.Spot.TopRight,
+                        click: addNodeAndLink  // this function is defined below
+                    },
+                    $(go.Shape, "PlusLine", {width: 6, height: 6})
+                ) // end button
+            ); // end Adornment
+
+        myDiagram.nodeTemplateMap.add("Start",
+            $(go.Node, "Spot", {desiredSize: new go.Size(75, 75)},
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                $(go.Shape, "Circle",
+                    {
+                        fill: "#52ce60", /* green */
+                        stroke: null,
+                        portId: "",
+                        fromLinkable: true, fromLinkableSelfNode: true, fromLinkableDuplicates: true,
+                        toLinkable: true, toLinkableSelfNode: true, toLinkableDuplicates: true,
+                        cursor: "pointer"
+                    }),
+                $(go.TextBlock, "Start",
+                    {
+                        font: "bold 16pt helvetica, bold arial, sans-serif",
+                        stroke: "whitesmoke"
+                    })
+            )
+        );
+
+        myDiagram.nodeTemplateMap.add("End",
+            $(go.Node, "Spot", {desiredSize: new go.Size(75, 75)},
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                $(go.Shape, "Circle",
+                    {
+                        fill: "maroon",
+                        stroke: null,
+                        portId: "",
+                        fromLinkable: true, fromLinkableSelfNode: true, fromLinkableDuplicates: true,
+                        toLinkable: true, toLinkableSelfNode: true, toLinkableDuplicates: true,
+                        cursor: "pointer"
+                    }),
+                $(go.Shape, "Circle", {
+                    fill: null,
+                    desiredSize: new go.Size(65, 65),
+                    strokeWidth: 2,
+                    stroke: "whitesmoke"
+                }),
+                $(go.TextBlock, "End",
+                    {
+                        font: "bold 16pt helvetica, bold arial, sans-serif",
+                        stroke: "whitesmoke"
+                    })
+            )
+        );
+
+        // clicking the button inserts a new node to the right of the selected node,
+        // and adds a link to that new node
+        function addNodeAndLink(e, obj) {
+            let adornment = obj.part;
+            let diagram = e.diagram;
+            diagram.startTransaction("Add State");
+
+            // get the node data for which the user clicked the button
+            let fromNode = adornment.adornedPart;
+            let fromData = fromNode.data;
+            // create a new "State" data object, positioned off to the right of the adorned Node
+            let toData = {text: "new"};
+            let p = fromNode.location.copy();
+            p.x += 200;
+            toData.loc = go.Point.stringify(p);  // the "loc" property is a string, not a Point object
+            // add the new node data to the model
+            let model = diagram.model;
+            model.addNodeData(toData);
+
+            // create a link data from the old node data to the new node data
+            let linkdata = {
+                from: model.getKeyForNodeData(fromData),  // or just: fromData.id
+                to: model.getKeyForNodeData(toData),
+                text: "transition"
+            };
+            // and add the link data to the model
+            model.addLinkData(linkdata);
+
+            // select the new Node
+            let newnode = diagram.findNodeForData(toData);
+            diagram.select(newnode);
+
+            diagram.commitTransaction("Add State");
+
+            // if the new node is off-screen, scroll the diagram to show the new node
+            diagram.scrollToRect(newnode.actualBounds);
+        }
+
+        // replace the default Link template in the linkTemplateMap
+        myDiagram.linkTemplate =
+            $(go.Link,  // the whole link panel
+                {
+                    curve: go.Link.Bezier,
+                    adjusting: go.Link.Stretch,
+                    reshapable: true, relinkableFrom: true, relinkableTo: true,
+                    toShortLength: 3
+                },
+                new go.Binding("points").makeTwoWay(),
+                new go.Binding("curviness"),
+                $(go.Shape,  // the link shape
+                    {strokeWidth: 1.5},
+                    new go.Binding('stroke', 'progress', function (progress) {
+                        return progress ? "#52ce60" /* green */ : 'black';
+                    }),
+                    new go.Binding('strokeWidth', 'progress', function (progress) {
+                        return progress ? 2.5 : 1.5;
+                    })
+                ),
+                $(go.Shape,  // the arrowhead
+                    {toArrow: "standard", stroke: null},
+                    new go.Binding('fill', 'progress', function (progress) {
+                        return progress ? "#52ce60" /* green */ : 'black';
+                    }),
+                ),
+                $(go.Panel, "Auto",
+                    $(go.Shape,  // the label background, which becomes transparent around the edges
+                        {
+                            fill: $(go.Brush, "Radial",
+                                {0: "rgb(245, 245, 245)", 0.7: "rgb(245, 245, 245)", 1: "rgba(245, 245, 245, 0)"}),
+                            stroke: null
+                        }),
+                    $(go.TextBlock, "transition",  // the label text
+                        {
+                            textAlign: "center",
+                            font: "9pt helvetica, arial, sans-serif",
+                            margin: 4,
+                            editable: true  // enable in-place editing
+                        },
+                        // editing the text automatically updates the model data
+                        new go.Binding("text").makeTwoWay())
+                )
+            );
+
+        // read in the JSON data from the "mySavedModel" element
+        load();
+    }
+
+    function save() {
+        document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+    }
+
+    function load() {
+        myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+    }
+</script>
+</body>
+</html>

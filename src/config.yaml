@@ -1,0 +1,7 @@
+Kiali:
+  host: http://localhost:20001/kiali/api
+  username: admin
+  password: admin
+Istio:
+Prometheus:
+  host: http://localhost:9090

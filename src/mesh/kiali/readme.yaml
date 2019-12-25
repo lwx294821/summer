@@ -1,0 +1,4 @@
+### 消息头 ####
+design:
+ - echo "admin:admin" | base64
+ - 'curl -H "Authorization: Basic <base64 encoded string> " http://localhost:8080/kiali/api/authenticate'

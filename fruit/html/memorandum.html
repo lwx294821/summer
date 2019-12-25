@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fruit almond</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <style>
+        .classList {
+            width: 100%;
+            margin: 0;
+        }
+
+        .selected {
+            background: #707070;
+            color: white;
+            padding-left: 9px;
+        }
+
+        #sections li {
+            color: #707070;
+            padding-left: 9px;
+        }
+
+        .navbar-default .navbar-nav > li > a {
+            color: #707070;
+        }
+    </style>
+</head>
+<body onload="init()">
+<div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-2">
+            <div class="sidebar-nav">
+                <div class="navbar navbar-default" role="navigation">
+                    <ul id="sections" class="classList av navbar-nav">
+                        <li><a href="../index.html">动态跟踪</a></li>
+                        <li class="selected"><a href="./memorandum.html" style="color: white">任务结构</a></li>
+                        <li><a href="./mindmap.html">思维导向</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div id="myDiagramDiv"
+                 style="border: 1px solid black; width: 100%; height: 460px; background: whitesmoke; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <button id="SaveButton" onclick="save()" class="btn btn-sm" style="line-height: 0.8">
+                    Save
+                </button>
+                <button onclick="reload()" class="btn btn-sm" style="line-height: 0.8">Load</button>
+                <button onclick="layout()" class="btn btn-sm " style="line-height: 0.8">Do Layout</button>
+            </div>
+            Node data in Model: <span id="nodes"></span>.
+            Actual Nodes in Diagram: <span id="node-shown"></span>.
+            Actual Links in Diagram: <span id="link-shown"></span>.
+            <textarea id="mySavedModel" style="width:100%;height:300px">
+
+            </textarea>
+        </div>
+    </div>
+
+</div>
+</div>
+<script src="../js/go.js"></script>
+<script src="../js/axios.js"></script>
+<script>
+    function init() {
+        let $ = go.GraphObject.make;
+        myDiagram =
+            $(go.Diagram, "myDiagramDiv",
+                {
+                    initialAutoScale: go.Diagram.UniformToFill,
+                    layout: $(go.TreeLayout, {nodeSpacing: 15, layerSpacing: 40})
+                });
+
+        // Define a simple node template consisting of text followed by an expand/collapse button
+        myDiagram.nodeTemplate =
+            $(go.Node, "Horizontal",{
+                    toolTip:
+                        $("ToolTip",
+                            $(go.TextBlock, {margin: 1},
+                                new go.Binding("text", "",
+                                    function (d) {
+                                        return "key: " + d.key + "\ntext: " + d.text;
+                                    }))
+                        )
+                },
+                $(go.Panel, "Auto",
+                    $(go.Shape, "Rectangle", {
+                            stroke: null
+                        },
+                        new go.Binding("fill", "color")),
+                    $(go.TextBlock,
+                        {
+                            stroke: "black", margin: 3,editable: true
+                        },
+                        new go.Binding("text", "text").makeTwoWay())
+                    ),
+                $("TreeExpanderButton")
+            );
+        myDiagram.nodeTemplate.selectionAdornmentTemplate =
+            $(go.Adornment, "Spot",
+                $(go.Panel, "Auto",
+                    $(go.Shape, {fill: null, stroke: "#000", strokeWidth: 1}),
+                    $(go.Placeholder)  // a Placeholder sizes itself to the selected Node
+                ),
+                $("Button",
+                    {
+                        alignment: go.Spot.TopRight,
+                        click: addNodeAndLink  // this function is defined below
+                    },
+                    $(go.Shape, "PlusLine", {width: 6, height: 6})
+                )
+            );
+        myDiagram.linkTemplate =
+            $(go.Link,
+
+                $(go.Shape)
+            );  // the link shape
+        myLoading =
+            $(go.Part,  // this has to set the location or position explicitly
+                {location: new go.Point(0, 0)},
+                $(go.TextBlock, "Wait a few minutes",
+                    {stroke: "black", font: "20pt sans-serif"}));
+
+        // temporarily add the status indicator
+        myDiagram.add(myLoading);
+
+        // Allow the myLoading indicator to be shown now,
+        // but allow objects added in load to also be considered part of the initial Diagram.
+        // If you are not going to add temporary initial Parts, don't call delayInitialization.
+        myDiagram.delayInitialization(load);
+
+    }
+
+    function getColor(color) {
+        switch (color) {
+            case "primary":
+                return "#52ce60";
+            case "running":
+                return "#fd7e14";
+            case "mission":
+                return "#6c757d";
+            default:
+                return "#ffffff"
+        }
+    }
+
+    function addNodeAndLink(e, obj) {
+        let adornment = obj.part;
+        let diagram = e.diagram;
+        diagram.startTransaction("Add State");
+
+        // get the node data for which the user clicked the button
+        let fromNode = adornment.adornedPart;
+        let fromData = fromNode.data;
+        let id = diagram.model.nodeDataArray.length + 1;
+        // create a new "State" data object, positioned off to the right of the adorned Node
+        let toData = {key: id, text: "NewData", parent: fromData.key, color: go.Brush.randomColor()};
+
+        // add the new node data to the model
+        let model = diagram.model;
+        model.addNodeData(toData);
+
+
+        // select the new Node
+        let newnode = diagram.findNodeForData(toData);
+        diagram.select(newnode);
+
+        diagram.commitTransaction("Add State");
+
+        // if the new node is off-screen, scroll the diagram to show the new node
+        diagram.scrollToRect(newnode.actualBounds);
+    }
+
+    function load() {
+        // create a lot of data for the myWholeModel
+        axios.get('http://localhost:8080/worker/fruit/api/v1', {
+            params: {
+                type: "tracing",
+                time: "2019"
+            }
+        }).then(function (response) {
+            let treedata = [];
+            for (let i = 0; i < response.data.nodeDataArray.length; i++) {
+                let t = response.data.nodeDataArray[i];
+                let c = getColor(t.color);
+                let d = {
+                    key: t.key,
+                    color: t.color,
+                    parent: t.parent,
+                    text: t.text
+                };
+                treedata.push(d);
+            }
+            myDiagram.remove(myLoading);
+            myDiagram.model = new go.TreeModel(treedata);
+
+        })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+
+            });
+
+
+    }
+
+    function save() {
+        document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+    }
+
+    function reload() {
+        myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+    }
+
+
+</script>
+</body>
+</html>

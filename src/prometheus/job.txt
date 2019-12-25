@@ -1,0 +1,4 @@
+# 暴露应用内部度量指标
+  http.Handle("/metrics", promhttp.Handler())
+  http.ListenAndServe(":2112", nil)
+# 调用Prometheus API的客户端

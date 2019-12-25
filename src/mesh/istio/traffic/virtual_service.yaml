@@ -1,0 +1,26 @@
+# Virtual Service
+# https://istio.io/docs/concepts/traffic-management/
+# 1.用于配置请求到服务实例的路由规则，多个路由规则按顺序计算
+# 2.支持A/B测试、金丝雀发布；基于百分比分流到不同版本的服务实例
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews
+  http:
+    - match:
+        - headers:
+            end-user:
+              exact: jason
+      route:
+        - destination:
+            host: reviews
+            subset: v2
+    - route:
+        - destination:
+            host: reviews
+            subset: v3
+---

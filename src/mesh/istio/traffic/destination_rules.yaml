@@ -1,0 +1,27 @@
+# destination rules 用于决定流量送到目的地后发生什么动作，是真实决定流量到具体实例的配置。
+# 配合virtual services使用
+#
+#
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: my-destination-rule
+spec:
+  host: my-svc
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
+    - name: v3
+      labels:
+        version: v3
