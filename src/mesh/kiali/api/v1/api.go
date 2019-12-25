@@ -135,7 +135,7 @@ func apiError(code int) bool {
 func errorTypeAndMsgFor(resp *http.Response) (ErrorType, string) {
 	switch resp.StatusCode / 100 {
 	case 4:
-		return ErrClient, fmt.Sprintf("client error: %d", resp.StatusCode)
+		return ErrClient, fmt.Sprintf("resources error: %d", resp.StatusCode)
 	case 5:
 		return ErrServer, fmt.Sprintf("server error: %d", resp.StatusCode)
 	}
