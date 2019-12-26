@@ -19,7 +19,7 @@ type Prometheus struct {
 
 
 const IstioTcpSentBytesTotal = "istio_tcp_sent_bytes_total"
-// 统计出流量
+// 统计源流出流量
 func (p *Prometheus)TCPOutgoing(namespace,source string ) {
 	client, err := api.NewClient(api.Config{
 		Address: p.Address,
@@ -69,7 +69,7 @@ func (p *Prometheus)PromQL(metric string,labels map[string]string) string{
 }
 
 const IstioTcpReceivedBytesTotal = "istio_tcp_received_bytes_total"
-// 统计目的工作负载入流量
+// 统计目的工作负载进入流量
 func (p *Prometheus)TCPInComing(namespace,destination string){
 	client, err := api.NewClient(api.Config{
 		Address: p.Address,
@@ -105,6 +105,9 @@ func (p *Prometheus)TCPInComing(namespace,destination string){
 	fmt.Println("Result:")
 	fmt.Printf("Result:\n%v\n", result)
 }
+
+
+
 
 
 

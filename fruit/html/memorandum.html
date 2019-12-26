@@ -175,35 +175,74 @@
     }
 
     function load() {
-        // create a lot of data for the myWholeModel
-        axios.get('http://localhost:8080/worker/fruit/api/v1', {
-            params: {
-                type: "tracing",
-                time: "2019"
-            }
-        }).then(function (response) {
-            let treedata = [];
-            for (let i = 0; i < response.data.nodeDataArray.length; i++) {
-                let t = response.data.nodeDataArray[i];
-                let c = getColor(t.color);
-                let d = {
-                    key: t.key,
-                    color: t.color,
-                    parent: t.parent,
-                    text: t.text
-                };
-                treedata.push(d);
-            }
-            myDiagram.remove(myLoading);
-            myDiagram.model = new go.TreeModel(treedata);
-
-        })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-
-            });
+        let samples={
+            "nodeDataArray": [
+                {"key":1, "color":"#52ce60", "parent":"", "text":"平台"},
+                {"key":2, "color":"#fd7e14", "parent":1, "text":"灵雀云"},
+                {"key":12, "color":"#96f7d8", "parent":1, "text":"文档类"},
+                {"key":13, "color":"#8aa5fa", "parent":1, "text":"代码类"},
+                {"key":14, "color":"#b7b7c6", "parent":1, "text":"研究类"},
+                {"key":15, "color":"#a1adb7", "parent":12, "text":"云原生项目PPT"},
+                {"key":16, "color":"#fab9af", "parent":13, "text":"Go开发API客户端"},
+                {"key":17, "color":"#82bff4", "parent":14, "text":"全链路监控"},
+                {"key":18, "color":"#e4d3e7", "parent":15, "text":"DevOps流水线"},
+                {"key":19, "color":"#e08bbd", "parent":15, "text":"Kubernetes架构"},
+                {"key":20, "color":"#9581ab", "parent":15, "text":"Prometheus-Operator"},
+                {"key":21, "color":"#d199c8", "parent":15, "text":"Calico架构"},
+                {"key":22, "color":"#97e2a6", "parent":16, "text":"Kiali API"},
+                {"key":23, "color":"#87f79e", "parent":16, "text":"Isito API"},
+                {"key":24, "color":"#d1d6ee", "parent":16, "text":"Kubernetes API"},
+                {"key":25, "color":"#dab2ee", "parent":16, "text":"Prometheus API"},
+                {"key":-17, "color":"#a4baa2", "parent":2, "text":"疑难问题解决跟踪"},
+                {"key":-18, "text":"Kiali", "parent":17, "color":"#b0eddb"},
+                {"key":-19, "text":"Istio", "parent":17, "color":"#f0cede"},
+                {"key":-20, "text":"Prometheus", "parent":17, "color":"#f8e9ca"},
+                {"key":-21, "text":"Envoy", "parent":17, "color":"#aeb5c7"},
+                {"key":-22, "text":"ELK", "parent":15, "color":"#9095c3"}
+            ]
+        };
+        let treedata=[];
+        for (let i = 0; i < samples.nodeDataArray.length; i++) {
+            let t = samples.nodeDataArray[i];
+            let d = {
+                key: t.key,
+                color: t.color,
+                parent: t.parent,
+                text: t.text
+            };
+            treedata.push(d);
+        }
+        myDiagram.remove(myLoading);
+        myDiagram.model = new go.TreeModel(treedata);
+        // // create a lot of data for the myWholeModel
+        // axios.get('http://localhost:8080/worker/fruit/api/v1', {
+        //     params: {
+        //         type: "tracing",
+        //         time: "2019"
+        //     }
+        // }).then(function (response) {
+        //     let treedata = [];
+        //     for (let i = 0; i < response.data.nodeDataArray.length; i++) {
+        //         let t = response.data.nodeDataArray[i];
+        //         let c = getColor(t.color);
+        //         let d = {
+        //             key: t.key,
+        //             color: t.color,
+        //             parent: t.parent,
+        //             text: t.text
+        //         };
+        //         treedata.push(d);
+        //     }
+        //     myDiagram.remove(myLoading);
+        //     myDiagram.model = new go.TreeModel(treedata);
+        //
+        // })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     })
+        //     .finally(function () {
+        //
+        //     });
 
 
     }
