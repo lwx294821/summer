@@ -2,6 +2,6 @@ package local
 
 import "testing"
 
-func TestHost(t *testing.T){
-	Machine()
+func TestHost(t *testing.T) {
+	NodeInfo()
 }
