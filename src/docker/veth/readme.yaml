@@ -1,0 +1,3 @@
+image: dockerveth:latest
+install: docker run --rm -v /usr/local/bin:/target dockerveth
+command: dockerveth

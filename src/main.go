@@ -18,5 +18,6 @@ func init() {
 }
 
 func main() {
-	local.Ifcfg()
+	local.FindAllNetWorkDevs()
+	local.Ifconfig()
 }
