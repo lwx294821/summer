@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	"summer/src/local"
 )
 
@@ -18,6 +20,11 @@ func init() {
 }
 
 func main() {
-	local.FindAllNetWorkDevs()
-	local.Ifconfig()
+	dev:=local.FindAllNetWorkDevs()
+	var json_iterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	b, err := json_iterator.Marshal(dev)
+	if err ==nil{
+		fmt.Println(string(b))
+	}
+
 }

@@ -45,66 +45,63 @@ func Ifconfig() bool {
 
 type Device struct {
 	Name  string
-	IPv4  string
-	IPv6  string
+	IP  string
 	Flags string
+	Ether string
 }
 
 //使用pcap包需要提前准备 yum install -y libpcap-devel
-func FindAllNetWorkDevs() {
+func FindAllNetWorkDevs() []Device{
 	devices, err := pcap.FindAllDevs()
 	if err != nil {
 		log.Fatal(err)
 	}
+	var devs  []Device
 	for _, d := range devices {
 		var ip = findDevIpv(d)
 		if ip == "" {
 			continue
 		}
-		var macaddr = findDevMacAddrByIp(ip)
-		log.Println("name:"+d.Name, "ip:"+ip, "macaddr:"+macaddr)
-		for _, addr := range d.Addresses {
-			if !addr.IP.IsLoopback() {
-
-			}
+		macaddr,flag := findDevMacAddrByIp(ip)
+		if macaddr == nil{
+			continue
 		}
+		devs=append(devs,Device{Name:d.Name,IP:ip,Flags:flag.String(),Ether:macaddr.String()})
 	}
+	return devs
 }
 
-//获取设备的IPv4地址
+//获取设备的IPv4或者IPv6,不包括loop设备
 func findDevIpv(device pcap.Interface) string {
 	for _, addr := range device.Addresses {
-		if ipv4 := addr.IP.To4(); ipv4 != nil {
-			if addr.IP.IsLoopback() {
-				return ""
-			}
-			return ipv4.String()
-		} else if ipv6 := addr.IP.To16(); ipv6 != nil {
-			return ipv6.String()
+		if addr.IP.IsLoopback(){
+			return ""
+		}else {
+			return addr.IP.String()
 		}
 	}
 	return ""
 }
 
 //根据IP获取网卡的MAC地址
-func findDevMacAddrByIp(ip string) string {
+func findDevMacAddrByIp(ip string) (net.HardwareAddr,net.Flags) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
-		return ""
+       return nil,0
 	}
 	for _, i := range interfaces {
 		addrs, err := i.Addrs()
 		if err != nil {
 			log.Println(err)
-			return ""
+			return nil,0
 		}
 		for _, addr := range addrs {
 			if a, ok := addr.(*net.IPNet); ok {
 				if ip == a.IP.String() {
-					return i.HardwareAddr.String()
+					return i.HardwareAddr,i.Flags
 				}
 			}
 		}
 	}
-	return ""
+	return nil,0
 }

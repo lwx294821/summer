@@ -11,3 +11,6 @@ interface:
     - P #这是一个点到点链接。
     - R #接口正在运行。
     - U #接口处于“活动”状态。
+  jq:
+    - yum install epel-release
+    - yum install jq
