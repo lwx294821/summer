@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
+	"context"
 	"flag"
-	"summer/src/local"
+	"os"
+	"summer/src/local/packet"
+	"time"
 )
 
 var kind string
@@ -18,5 +22,15 @@ func init() {
 }
 
 func main() {
-	local.Ifconfig()
+	ctx, cancel := context.WithTimeout(context.Background(),time.Duration(200)*time.Second)
+    defer func() {
+    	cancel()
+	}()
+	packet.StartNetSniff("172.17.0.1",ctx)
+	in := bufio.NewReader(os.Stdin)
+	_, _, err := in.ReadLine()
+	if err != nil {
+		os.Exit(1)
+	}
+
 }
