@@ -5,3 +5,13 @@ token:
  - APISERVER=$(kubectl config view | grep server | cut -f 2- -d ":" | tr -d " ")
  - TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d '\t')
  - "curl $APISERVER/api --header 'Authorization: Bearer $TOKEN' --insecure"
+
+
+kubespray:
+  link: https://github.com/kubernetes-sigs/kubespray/blob/master/docs/getting-started.md
+  addNodes:
+   - 在清单中增加节点
+   - ansible-playbook -i inventory/mycluster/hosts.yml scale.yml -b -v --private-key=~/.ssh/private_key
+  removeNodes:
+   - ansible-playbook -i inventory/mycluster/hosts.yml remove-node.yml -b -v --private-key=~/.ssh/private_key --extra-vars "node=nodename,nodename2"
+   - 节点不可达，在集群机器清单中增加主机变量 reset_nodes=no

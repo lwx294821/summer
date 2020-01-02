@@ -27,6 +27,7 @@ func Ifconfig() bool {
 	}
 	for i := 0; i < len(netInterfaces); i++ {
 		if (netInterfaces[i].Flags & net.FlagUp) != 0 {
+			log.Println(netInterfaces[i].Name,netInterfaces[i].Flags.String())
 			addrs, _ := netInterfaces[i].Addrs()
 			for _, address := range addrs {
 				//address.(*net.IPNet) 类型断言,即判断该变量是否为指定类型同时对变量进行类型转换
