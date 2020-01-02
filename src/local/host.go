@@ -18,7 +18,7 @@ func NodeInfo() {
 	log.Println(h.Hostname, c, m, d, dio)
 }
 
-func Ifcfg() bool {
+func Ifconfig() bool {
 	netInterfaces, err := net.Interfaces()
 	if err != nil {
 		log.Println("net.Interfaces failed, err:", err.Error())
@@ -26,6 +26,7 @@ func Ifcfg() bool {
 	}
 	for i := 0; i < len(netInterfaces); i++ {
 		if (netInterfaces[i].Flags & net.FlagUp) != 0 {
+			log.Println(netInterfaces[i].Flags.String())
 			addrs, _ := netInterfaces[i].Addrs()
 			for _, address := range addrs {
 				//address.(*net.IPNet) 类型断言,即判断该变量是否为指定类型同时对变量进行类型转换

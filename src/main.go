@@ -18,5 +18,5 @@ func init() {
 }
 
 func main() {
-	local.Ifcfg()
+	local.Ifconfig()
 }
