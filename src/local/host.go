@@ -1,6 +1,7 @@
 package local
 
 import (
+	"github.com/google/gopacket/pcap"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -40,4 +41,67 @@ func Ifconfig() bool {
 		}
 	}
 	return false
+}
+
+type Device struct {
+	Name  string
+	IP  string
+	Flags string
+	Ether string
+}
+
+//使用pcap包需要提前准备 yum install -y libpcap-devel
+func FindAllNetWorkDevs() []Device{
+	devices, err := pcap.FindAllDevs()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var devs  []Device
+	for _, d := range devices {
+		var ip = findDevIpv(d)
+		if ip == "" {
+			continue
+		}
+		macaddr,flag := findDevMacAddrByIp(ip)
+		if macaddr == nil{
+			continue
+		}
+		devs=append(devs,Device{Name:d.Name,IP:ip,Flags:flag.String(),Ether:macaddr.String()})
+	}
+	return devs
+}
+
+//获取设备的IPv4或者IPv6,不包括loop设备
+func findDevIpv(device pcap.Interface) string {
+	for _, addr := range device.Addresses {
+		if addr.IP.IsLoopback(){
+			return ""
+		}else {
+			return addr.IP.String()
+		}
+	}
+	return ""
+}
+
+//根据IP获取网卡的MAC地址
+func findDevMacAddrByIp(ip string) (net.HardwareAddr,net.Flags) {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+       return nil,0
+	}
+	for _, i := range interfaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			log.Println(err)
+			return nil,0
+		}
+		for _, addr := range addrs {
+			if a, ok := addr.(*net.IPNet); ok {
+				if ip == a.IP.String() {
+					return i.HardwareAddr,i.Flags
+				}
+			}
+		}
+	}
+	return nil,0
 }

@@ -1,0 +1,43 @@
+#!/bin/bash
+get_network_mode() {
+    docker inspect --format='{{.HostConfig.NetworkMode}}' "$1"
+}
+
+created_by_kubelet() {
+    [[ $(docker inspect --format='{{.Name}}' "$1") =~ ^/k8s_ ]]
+}
+for container_name in $(docker ps --format '{{.Names}}'); do
+    container_id=$(docker ps -aqf "name=${container_name}")
+    network_mode=$(get_network_mode "${container_id}")
+    # skip the containers whose network_mode is 'host' or 'none',
+    # but do NOT skip the container created by kubelet.
+    if [[ "${network_mode}" == "host" || \
+          $(! created_by_kubelet "${container_id}") && "${network_mode}" == "none" ]]; then
+        continue
+    fi
+
+    # if one container's network_mode is 'other container',
+    # then get its root parent container's network_mode.
+    while grep container <<< "${network_mode}" -q; do
+        network_mode=$(get_network_mode "${network_mode/container:/}")
+        # skip the containers whose network_mode is 'host' or 'none',
+        # but do NOT skip the container created by kubelet.
+        if [[ "${network_mode}" == "host" || \
+              $(! created_by_kubelet "${container_id}") && "${network_mode}" == "none" ]]; then
+            continue 2
+        fi
+    done
+
+    # get current container's 'pid'.
+    pid=$(docker inspect --format='{{.State.Pid}}' "${container_id}")
+
+    # get the 'id' of veth device in the container.
+    veth_id=$(nsenter -t "${pid}" -n ip link show eth0 |grep -oP '(?<=eth0@if)\d+(?=:)')
+
+    # get the 'name' of veth device in the 'docker0' bridge (or other name),
+    # which is the peer of veth device in the container.
+    veth_name=$(ip link show |sed -nr "s/^${veth_id}: *([^ ]*)@if.*/\1/p")
+
+    echo "container_name:${container_name},container_id:${container_id},veth:${veth_name},network_mode:${network_mode}"
+done
+
