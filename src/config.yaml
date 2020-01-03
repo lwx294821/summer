@@ -29,7 +29,7 @@ Istio:
       tag: 1.4.0
     all-in-one:
       repo: jaegertracing
-      tag: 1.14
+      tag: "1.14"
     zipkin:
       repo: openzipkin
       tag: 2.14.2

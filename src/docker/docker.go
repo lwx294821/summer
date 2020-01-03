@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"reflect"
 	"strings"
 )
 
@@ -20,10 +19,6 @@ type Container struct {
 /**
    前提安装dockerveth命令工具 docker run --rm -d -v /usr/local/bin:/target dockerveth:latest
  */
-func findAllContainerVeth(){
-
-}
-
 
 //获取指定目录下的镜像tar文件，运行docker load -i [filename].tar
 func LoadImages(pwd string){
@@ -32,7 +27,6 @@ func LoadImages(pwd string){
          if !info.IsDir() && strings.HasSuffix(info.Name(),".tar"){
 			var cmd = fmt.Sprintf("docker load -i %s",path)
 			execShell(cmd)
-
 		 }
       	return nil
 	  })
@@ -44,16 +38,16 @@ func execShell(command string){
 	log.Println(cmd.Args)
 	err:=cmd.Wait()
 	if err !=nil{
-		log.Println(err.Error())
+		log.Println(err)
 	}
 }
 
 /**
-  app指组件名称，比如
+  app指组件名称，比如Istio,Kubernetes,需要与配置文件对应上否则会报错。
  */
-func PushRegistry(hub string,app string){
+func PushRegistry(app string){
 	config := viper.New()
-	paths, fileName := filepath.Split("/root/summer/src//config.yaml")
+	paths, fileName := filepath.Split("/root/summer/src/config.yaml")
 	config.AddConfigPath(paths)
 	config.SetConfigName(fileName)
 	var suffix = path.Ext(fileName)
@@ -64,10 +58,17 @@ func PushRegistry(hub string,app string){
 	if config.IsSet(app) {
 		var m = config.GetStringMap(app+".images")
 		var hub = config.Get(app+".hub")
-		
-
+		for k,v :=range m{
+			if e,ok:=v.(map[string]interface{});ok{
+				var s = fmt.Sprintf("%s/%s:%s",e["repo"],k,e["tag"])
+				var t =fmt.Sprintf("%s/%s/%s:%s",hub,e["repo"],k,e["tag"])
+				var tag = fmt.Sprintf("docker tag %s %s",s,t)
+				execShell(tag)
+				var push = fmt.Sprintf("docker push %s",t)
+				execShell(push)
+			}
+		}
 	}
-
 }
 
 
