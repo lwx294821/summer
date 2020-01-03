@@ -3,5 +3,65 @@ Kiali:
   username: admin
   password: admin
 Istio:
+  version: 1.4.0
+  hub: 192.168.176.121:5000
+  images:
+    kubectl:
+      repo: istio
+      tag: 1.4.0
+    install-cni:
+      repo: istio
+      tag: 1.4.0
+    node-agent-k8s:
+      repo: istio
+      tag: 1.4.0
+    proxyv2:
+      repo: istio
+      tag: 1.4.0
+    mixer:
+      repo: istio
+      tag: 1.4.0
+    cert-manager-controller:
+      repo: jetstack
+      tag: v0.8.1
+    pilot:
+      repo: istio
+      tag: 1.4.0
+    all-in-one:
+      repo: jaegertracing
+      tag: 1.14
+    zipkin:
+      repo: openzipkin
+      tag: 2.14.2
+    curl:
+      repo: pstauffer
+      tag: v1.0.3
+    prometheus:
+      repo: prom
+      tag: v2.12.0
+    galley:
+      repo: istio
+      tag: 1.4.0
+    kiali:
+      repo: kiali
+      tag: v1.9
+    sidecar_injector:
+      repo: istio
+      tag: 1.4.0
+    grafana:
+      repo: grafana
+      tag: 6.4.3
+    citadel:
+      repo: istio
+      tag: 1.4.0
+    coredns-plugin:
+      repo: istio
+      tag: 0.2-istio-1.1
+    coredns:
+      repo: coredns
+      tag: 1.6.2
+    ubuntu:
+       repo: ubuntu
+       tag: xenial
 Prometheus:
   host: http://localhost:9090

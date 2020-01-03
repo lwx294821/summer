@@ -1,0 +1,109 @@
+{
+  "duration": 0,
+  "elements": {
+    "edges": [
+      {
+        "data": {
+          "id": "string",
+          "isMTLS": "string",
+          "responseTime": "string",
+          "source": "string",
+          "target": "string",
+          "traffic": {
+            "protocol": "string",
+            "rates": {
+              "property1": "string",
+              "property2": "string"
+            },
+            "responses": {
+              "property1": {
+                "flags": {
+                  "property1": "string",
+                  "property2": "string"
+                },
+                "hosts": {
+                  "property1": "string",
+                  "property2": "string"
+                }
+              },
+              "property2": {
+                "flags": {
+                  "property1": "string",
+                  "property2": "string"
+                },
+                "hosts": {
+                  "property1": "string",
+                  "property2": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "app": "string",
+          "destServices": [
+            {
+              "name": "string",
+              "namespace": "string"
+            }
+          ],
+          "hasCB": true,
+          "hasMissingSC": true,
+          "hasVS": true,
+          "id": "string",
+          "isDead": true,
+          "isGroup": "string",
+          "isInaccessible": true,
+          "isMisconfigured": "string",
+          "isOutside": true,
+          "isRoot": true,
+          "isServiceEntry": "string",
+          "isUnused": true,
+          "namespace": "string",
+          "nodeType": "string",
+          "parent": "string",
+          "service": "string",
+          "traffic": [
+            {
+              "protocol": "string",
+              "rates": {
+                "property1": "string",
+                "property2": "string"
+              },
+              "responses": {
+                "property1": {
+                  "flags": {
+                    "property1": "string",
+                    "property2": "string"
+                  },
+                  "hosts": {
+                    "property1": "string",
+                    "property2": "string"
+                  }
+                },
+                "property2": {
+                  "flags": {
+                    "property1": "string",
+                    "property2": "string"
+                  },
+                  "hosts": {
+                    "property1": "string",
+                    "property2": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "version": "string",
+          "workload": "string"
+        }
+      }
+    ]
+  },
+  "graphType": "string",
+  "timestamp": 0
+}

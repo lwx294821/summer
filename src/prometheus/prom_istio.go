@@ -46,14 +46,13 @@ func (p *Prometheus)TCPOutgoing(namespace,source string ) {
 	log.Println("irate("+query+"[5m])")
 	result, warnings, err := api.QueryRange(ctx, "irate("+query+"[5m])", r)
 	if err != nil {
-		fmt.Printf("Error querying Prometheus: %v\n", err)
+		log.Printf("Error querying Prometheus: %v\n", err)
 		os.Exit(1)
 	}
 	if len(warnings) > 0 {
-		fmt.Printf("Warnings: %v\n", warnings)
+		log.Printf("Warnings: %v\n", warnings)
 	}
-	fmt.Println("Result:")
-	fmt.Printf("Result:\n%v\n", result)
+	log.Println(result)
 }
 
 
@@ -104,6 +103,10 @@ func (p *Prometheus)TCPInComing(namespace,destination string){
 	}
 	fmt.Println("Result:")
 	fmt.Printf("Result:\n%v\n", result)
+}
+
+func Workload(){
+
 }
 
 

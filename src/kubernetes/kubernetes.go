@@ -3,12 +3,15 @@ package kubernetes
 import (
 	"flag"
 	"fmt"
+	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type Config struct {
@@ -20,25 +23,25 @@ type API interface {
 	Nodes()
 	Namespaces()
 	Service(namespace,service string)
-	App(namespace,app string)
+	Deployment(namespace,app string)
 }
 
-type httpAPI struct{
-     cfg Config
+type HttpAPI struct{
+     Cfg Config
      API
 }
 type K8SClientSet struct {
 	cli *kubernetes.Clientset
 }
 
-func (h *httpAPI)Client()(*kubernetes.Clientset,error){
+func (h *HttpAPI)Client()(*kubernetes.Clientset,error){
 	var clientset *kubernetes.Clientset
 	var kubeconfig *string
-	if h.cfg.KubeConfig == "" {
+	if h.Cfg.KubeConfig == "" {
 		var home = homeDir()
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
 	}else {
-		kubeconfig=&h.cfg.KubeConfig
+		kubeconfig=&h.Cfg.KubeConfig
 	}
 	flag.Parse()
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
@@ -52,7 +55,7 @@ func (h *httpAPI)Client()(*kubernetes.Clientset,error){
 	return clientset,nil
 }
 
-func (h *httpAPI)Pods(namespace string) {
+func (h *HttpAPI)Pods(namespace string) {
 	clientset,err:= h.Client()
 	if clientset == nil{
 		log.Println("Connect kubernetes Fail！！！")
@@ -75,18 +78,21 @@ func homeDir() string {
 }
 
 
-func (h *httpAPI)Nodes(){
+func (h *HttpAPI)Nodes() *v1.NodeList  {
     clientset,err:= h.Client()
     if clientset == nil{
     	log.Println("Connect kubernetes Fail！！！")
     	log.Println(err)
-		return
+		return nil
 	}
 	nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-	log.Println(nodes)
+	if err !=nil{
+		return nil
+	}
+	return nodes
 }
 
-func (h *httpAPI)Namespaces(){
+func (h *HttpAPI)Namespaces(){
 	clientset,err:= h.Client()
 	if clientset ==nil{
 		log.Println("Connect kubernetes Fail！！！")
@@ -97,7 +103,7 @@ func (h *httpAPI)Namespaces(){
 	log.Println(namespaces)
 }
 
-func (h *httpAPI)Service(namespace,service string){
+func (h *HttpAPI)Service(namespace,service string){
 	clientset,err:= h.Client()
 	if clientset ==nil{
 		log.Println("Connect kubernetes Fail！！！")
@@ -108,14 +114,44 @@ func (h *httpAPI)Service(namespace,service string){
 	log.Println(svc)
 }
 
-func (h *httpAPI)App(namespace ,app string){
+func (h *HttpAPI)Deployment(namespace ,app string) *appsv1.Deployment{
 	clientset,err:= h.Client()
 	if clientset ==nil{
 		log.Println("Connect kubernetes Fail！！！")
-		log.Println(err)
-		return
+		return nil
 	}
 	deploy,err:=clientset.AppsV1().Deployments(namespace).Get(app,metav1.GetOptions{})
-	log.Println(deploy)
-
+	if err !=nil{
+		log.Println(err.Error())
+		return nil
+	}
+	return deploy
 }
+
+func (h *HttpAPI)WorkLoad(namespace string)map[string]interface{}{
+	start :=time.Now()
+	clientset,err:= h.Client()
+	if clientset ==nil{
+		log.Println("Connect kubernetes Fail！！！")
+		return nil
+	}
+	var wl=make(map[string]interface{})
+	pods,err:=clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
+	if err ==nil {
+		wl["Pod"]=pods.Items
+	}
+	svc,err:=clientset.CoreV1().Services(namespace).List(metav1.ListOptions{})
+	if err == nil {
+		wl["Service"]=svc.Items
+	}
+	deploy,err:=clientset.AppsV1().Deployments(namespace).List(metav1.ListOptions{})
+	if err == nil{
+		wl["Deployment"]=deploy.Items
+	}
+	defer func() {
+		end:=time.Since(start)
+		log.Printf("query workload time cost = %v",end)
+	}()
+	return wl
+}
+

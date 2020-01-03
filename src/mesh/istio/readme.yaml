@@ -11,8 +11,8 @@ install:
   "
 ### app deploy command ###
 extend:
-  - istioctl manifest generate --set profile=demo --set hub=<private-registry-url>
-  - istioctl kube-inject -f <your-app-spec>.yaml | kubectl apply -f -
+  - istioctl manifest generate --set profile=demo --set hub=<private-registry-url> # 生成demo部署的yaml文件
+  - istioctl kube-inject -f <your-app-spec>.yaml | kubectl apply -f - # istio注入边车代理到项目应用
 
 ### remove all istio resource ###
 uninstall:
