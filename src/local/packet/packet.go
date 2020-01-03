@@ -12,6 +12,7 @@ import (
 "time"
 )
 
+//根据ip模拟抓包取，计算流量速率
 type NetPkt struct {
 	LocalIP    net.IP
 	RemoteIP   net.IP
@@ -57,7 +58,7 @@ func StartNetSniff(ipAddr string,ctx context.Context) {
 	Start = true
 	PkgAcc = make(map[string]map[string]int64)
 
-	ctx, cancel := context.WithTimeout(ctx,time.Duration(150)*time.Second)
+	ctx, cancel := context.WithTimeout(ctx,time.Duration(200)*time.Second)
 	Ctx = ctx
 	Cancel = cancel
 	go startNetSniff(ctx, ipAddr)

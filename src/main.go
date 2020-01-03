@@ -26,11 +26,10 @@ func main() {
     defer func() {
     	cancel()
 	}()
-	packet.StartNetSniff("172.17.0.1",ctx)
+	packet.StartNetSniff("192.168.176.128",ctx)
 	in := bufio.NewReader(os.Stdin)
 	_, _, err := in.ReadLine()
 	if err != nil {
 		os.Exit(1)
 	}
-
 }

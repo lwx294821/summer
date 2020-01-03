@@ -35,7 +35,7 @@ var STATE = map[string]string{
 	"0B": "CLOSING",
 }
 
-//模拟netstat命令
+//模拟netstat命令,解析对应文件获取数据
 type Process struct {
 	User        string `json:"user"`
 	Name        string `json:"name"`
