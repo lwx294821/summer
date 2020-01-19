@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,12 +21,7 @@ func init() {
 }
 
 func main() {
-	//docker.PushRegistry("Istio")
-	//var json_iterator = jsoniter.ConfigCompatibleWithStandardLibrary
-	//b, err := json_iterator.Marshal(dev)
-	//StartServer()
-	var code=base64.StdEncoding.EncodeToString([]byte("admin:admin"))
-	fmt.Println(code)
+
 
 }
 func StartServer() {
@@ -36,7 +29,7 @@ func StartServer() {
 	signal.Notify(quit, os.Interrupt)
 	mux := http.NewServeMux()
 	mux.Handle("/", &myHandler{})
-	mux.Handle("/prometheus", &myHandler{})
+	mux.Handle("/api", &myHandler{})
 	mux.HandleFunc("/bye", sayBye)
 
 	server = &http.Server{
@@ -68,6 +61,8 @@ func StartServer() {
 type myHandler struct{}
 
 func (*myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	//get param then make a decision
+	
 	_,err:=w.Write([]byte("Hello World!"))
 	if err!=nil{
 		log.Println(err.Error())
@@ -82,5 +77,6 @@ func sayBye(w http.ResponseWriter, r *http.Request) {
 		log.Println([]byte("shutdown the server err"))
 	}
 }
+
 
 

@@ -16,6 +16,7 @@ type Container struct {
 	Id string
 	NetWorkMode string
 }
+
 /**
    前提安装dockerveth命令工具 docker run --rm -d -v /usr/local/bin:/target dockerveth:latest
  */
@@ -45,9 +46,9 @@ func execShell(command string){
 /**
   app指组件名称，比如Istio,Kubernetes,需要与配置文件对应上否则会报错。
  */
-func PushRegistry(app string){
+func PushRegistry(app,inventory string){
 	config := viper.New()
-	paths, fileName := filepath.Split("/root/summer/src/config.yaml")
+	paths, fileName := filepath.Split(inventory)
 	config.AddConfigPath(paths)
 	config.SetConfigName(fileName)
 	var suffix = path.Ext(fileName)
@@ -66,6 +67,28 @@ func PushRegistry(app string){
 				execShell(tag)
 				var push = fmt.Sprintf("docker push %s",t)
 				execShell(push)
+			}
+		}
+	}
+}
+
+func PullRegistry(app,inventory string){
+	config := viper.New()
+	paths, fileName := filepath.Split(inventory)
+	config.AddConfigPath(paths)
+	config.SetConfigName(fileName)
+	var suffix = path.Ext(fileName)
+	config.SetConfigType(suffix[1:])
+	if err := config.ReadInConfig(); err != nil {
+		panic(err)
+	}
+	if config.IsSet(app) {
+		var m = config.GetStringMap(app+".images")
+		for k,v :=range m{
+			if e,ok:=v.(map[string]interface{});ok{
+				var s = fmt.Sprintf("%s/%s:%s",e["repo"],k,e["tag"])
+				var tag = fmt.Sprintf("docker pull %s ",s)
+				execShell(tag)
 			}
 		}
 	}
