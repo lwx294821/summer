@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-pvc
+  namespace: default
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "local-volume"
+spec:
+  storageClassName: local-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 150 Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-gitlab-pv
+spec:
+  capacity:
+    storage: 150Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-volume
+  local:
+    path: /data/local/gitlab
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - master02

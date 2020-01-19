@@ -11,11 +11,6 @@ import (
 	v1 "summer/src/mesh/kiali/api/v1"
 	"time"
 )
-
-
-
-
-
 func Query(method string,args map[string]string,cfg api.Config){
 	client, err := api.NewClient(cfg)
 	if err != nil {

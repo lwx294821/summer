@@ -1,9 +1,7 @@
 package diagram
 
 import (
-	appsv1 "k8s.io/api/apps/v1"
 	"log"
-	"reflect"
 	"summer/src/diagram/node"
 	"summer/src/kubernetes"
 )
@@ -17,6 +15,13 @@ var httpApi kubernetes.HttpAPI
 func init(){
 	httpApi=kubernetes.HttpAPI{Cfg:kubernetes.Config{Address: "http://localhost:8080", KubeConfig: "/root/.kube/config"}}
 }
+//查询工作负载之部署
+func GetDeployment(namespace,name string)  {
+
+}
+
+
+
 
 func QueryNodes(namespace,workload,kind string) []node.Node{
 	var tnode  []node.Node
@@ -28,7 +33,9 @@ func QueryNodes(namespace,workload,kind string) []node.Node{
 		  }
 		  return tnode
 	case "Pod":
+		return nil
 	case "StatefulSet":
+		return nil
 	default:
 		log.Println("Don't find match type !!!")
 		return tnode
@@ -46,5 +53,12 @@ func deployment(namespace,workload string) ([]node.Node,error){
 	})
 	return ns,nil
 }
+
+//拓扑连接数据
+func QueryLinks(namespace string){
+
+}
+
+
 
 

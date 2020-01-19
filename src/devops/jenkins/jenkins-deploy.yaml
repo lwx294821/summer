@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: default
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      imagePullSecrets:
+        - name: aepharbor
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node01
+      containers:
+        - name: jenkins
+          image: jenkins:2.19
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: jenkins
+              mountPath: /root/.jenkins
+              readOnly: false
+          ports:
+            - containerPort: 9900
+            - containerPort: 50000
+      volumes:
+        - name: jenkins
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jenkins
+  name: jenkins
+  namespace: default
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  type: NodePort
+  ports:
+    - name: jenkins-web
+      port: 9900
+      targetPort: 9900
+      nodePort: 31442
+    - name: jenkins-agent
+      port: 50000
+      targetPort: 50000
+      nodePort: 30005
+  selector:
+    app: jenkins

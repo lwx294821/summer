@@ -24,6 +24,8 @@ type API interface {
 	Namespaces()
 	Service(namespace,service string)
 	Deployment(namespace,app string)
+	StatefulSet(namespace string)
+	DaemonSet(namespace string)
 }
 
 type HttpAPI struct{
@@ -55,6 +57,7 @@ func (h *HttpAPI)Client()(*kubernetes.Clientset,error){
 	return clientset,nil
 }
 
+//查询命名空间中所有Pods
 func (h *HttpAPI)Pods(namespace string) {
 	clientset,err:= h.Client()
 	if clientset == nil{
@@ -140,9 +143,9 @@ func (h *HttpAPI)WorkLoad(namespace string)map[string]interface{}{
 	if err ==nil {
 		wl["Pod"]=pods.Items
 	}
-	svc,err:=clientset.CoreV1().Services(namespace).List(metav1.ListOptions{})
+	ss,err:=clientset.AppsV1().StatefulSets(namespace).List(metav1.ListOptions{})
 	if err == nil {
-		wl["Service"]=svc.Items
+		wl["StatefulSet"]=ss.Items
 	}
 	deploy,err:=clientset.AppsV1().Deployments(namespace).List(metav1.ListOptions{})
 	if err == nil{
@@ -154,4 +157,22 @@ func (h *HttpAPI)WorkLoad(namespace string)map[string]interface{}{
 	}()
 	return wl
 }
+
+func podFilter(pods *v1.PodList){
+	var p = pods.Items
+	for _,v:=range p{
+		var or = v.OwnerReferences
+		for _,r:=range or{
+			var kind=r.Kind
+			log.Println(kind)
+		}
+	}
+}
+
+func DaemonSet(){
+
+}
+
+
+
 

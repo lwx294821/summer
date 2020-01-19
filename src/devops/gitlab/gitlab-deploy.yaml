@@ -1,0 +1,99 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab
+  namespace: default
+  labels:
+    name: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gitlab
+  template:
+    metadata:
+      name: gitlab
+      labels:
+        name: gitlab
+    spec:
+      containers:
+        - name: gitlab
+          image: sameersbn/gitlab:12.0.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GITLAB_SECRETS_DB_KEY_BASE
+              value: long-and-random-alpha-numeric-string
+            - name: GITLAB_SECRETS_SECRET_KEY_BASE
+              value: long-and-random-alpha-numeric-string
+            - name: GITLAB_SECRETS_OTP_KEY_BASE
+              value: long-and-random-alpha-numeric-string
+            - name: GITLAB_ROOT_PASSWORD
+              value: admin
+            - name: GITLAB_HOST
+              value: 26.47.128.42
+            - name: GITLAB_PORT
+              value: "80"
+            - name: GITLAB_SSH_PORT
+              value: "30022"
+            - name: DB_ADAPTER
+              value: postgresql
+            - name: DB_HOST
+              value: gitlab-postgresql
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: gitlab
+            - name: DB_PASS
+              value: gitlab
+            - name: DB_NAME
+              value: gitlab_production
+            - name: REDIS_HOST
+              value: gitlab-redis
+            - name: REDIS_PORT
+              value: "6379"
+          ports:
+            - name: http
+              containerPort: 80
+            - name: ssh
+              containerPort: 22
+          volumeMounts:
+            - mountPath: /home/git/data
+              name: data
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 180
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitlab-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab
+  namespace: default
+  labels:
+    name: gitlab
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080
+    - name: ssh
+      port: 22
+      targetPort: ssh
+      nodePort: 30022
+  type: NodePort
+  selector:
+    name: gitlab
+
