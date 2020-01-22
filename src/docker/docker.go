@@ -46,7 +46,7 @@ func execShell(command string){
 /**
   app指组件名称，比如Istio,Kubernetes,需要与配置文件对应上否则会报错。
  */
-func PushRegistry(app,inventory string){
+func PushRegistry(inventory string){
 	config := viper.New()
 	paths, fileName := filepath.Split(inventory)
 	config.AddConfigPath(paths)
@@ -56,6 +56,7 @@ func PushRegistry(app,inventory string){
 	if err := config.ReadInConfig(); err != nil {
 		panic(err)
 	}
+	var app = config.GetString("application")
 	if config.IsSet(app) {
 		var m = config.GetStringMap(app+".images")
 		var hub = config.Get(app+".hub")
@@ -72,7 +73,7 @@ func PushRegistry(app,inventory string){
 	}
 }
 
-func PullRegistry(app,inventory string){
+func PullRegistry(inventory string){
 	config := viper.New()
 	paths, fileName := filepath.Split(inventory)
 	config.AddConfigPath(paths)
@@ -82,6 +83,7 @@ func PullRegistry(app,inventory string){
 	if err := config.ReadInConfig(); err != nil {
 		panic(err)
 	}
+	var app = config.GetString("application")
 	if config.IsSet(app) {
 		var m = config.GetStringMap(app+".images")
 		for k,v :=range m{

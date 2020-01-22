@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"summer/src/entrance"
 	"time"
 )
 
@@ -21,8 +22,7 @@ func init() {
 }
 
 func main() {
-
-
+    entrance.Cli()
 }
 func StartServer() {
 	quit := make(chan os.Signal)
