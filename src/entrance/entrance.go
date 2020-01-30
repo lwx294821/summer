@@ -55,11 +55,11 @@ func Cli() {
 			},
 			Category: "Docker Task List",
 			Before: func(c *cli.Context) error {
-				fmt.Fprintf(c.App.Writer, "+ Start docker pull...\n")
+				_, _ = fmt.Fprintf(c.App.Writer, "+ Start docker pull...\n")
 				return nil
 			},
 			After: func(c *cli.Context) error {
-			    fmt.Fprintf(c.App.Writer, "+ End docker pull.\n")
+				_, _ = fmt.Fprintf(c.App.Writer, "+ End docker pull.\n")
 				return nil
 			},
 		},
