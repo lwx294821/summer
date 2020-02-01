@@ -77,6 +77,20 @@ func Cli() {
 			},
 			Category: "Docker Task List",
 		},
+		{
+			Name:    "save",
+			Usage:   "Save all images to tar file",
+			Action: func(c *cli.Context) error {
+				if "docker" == c.String("kind"){
+					docker.SaveImages(c.String("file"))
+				}
+				return nil
+			},
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "file",},
+			},
+			Category: "Docker Task List",
+		},
 	}
 
 

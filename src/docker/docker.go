@@ -97,4 +97,29 @@ func PullRegistry(inventory string){
 }
 
 
+func SaveImages(inventory string){
+	config := viper.New()
+	paths, fileName := filepath.Split(inventory)
+	config.AddConfigPath(paths)
+	config.SetConfigName(fileName)
+	var suffix = path.Ext(fileName)
+	config.SetConfigType(suffix[1:])
+	if err := config.ReadInConfig(); err != nil {
+		panic(err)
+	}
+	var app = config.GetString("application")
+	if config.IsSet(app) {
+		var m = config.GetStringMap(app+".images")
+		for k,v :=range m{
+			if e,ok:=v.(map[string]interface{});ok{
+				var s = fmt.Sprintf("%s/%s:%s",e["repo"],k,e["tag"])
+				var tag = fmt.Sprintf("docker save -o %s.%s.tar %s ",k,e["tag"],s)
+				execShell(tag)
+			}
+		}
+	}
+}
+
+
+
 
