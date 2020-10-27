@@ -1,0 +1,119 @@
+统计filebeat容器的CPU使用率
+  sum(rate(container_cpu_usage_seconds_total{image!="",pod_name!="",container_name="filebeat"}[1m])) by (pod_name, namespace) 
+	  /
+  (sum(container_spec_cpu_quota{image!="",container_name="filebeat"}/100000) by (pod_name, namespace)) * 100
+统计filebeat容器的内存使用率
+  sum(container_memory_rss{image!=""}) by(pod_name, namespace) 
+	  /
+  sum(container_spec_memory_limit_bytes{image!=""}) by(pod_name, namespace) * 100 != +inf
+ 
+ 
+ 江宁颐和美地和雅居1幢3单元1层101
+ 
+ 
+ PUT _ingest/pipeline/add-timestamp
+{
+  "processors": [
+    {
+      "set": {
+        "field": "timestamp_es",
+        "value": "{{_ingest.timestamp}}"
+      }
+    }
+  ]
+}
+
+
+PUT test/_settings
+{
+  "index.default_pipeline": "add-timestamp"
+}
+
+段落格式
+首行缩进，单倍行距，华文仿宋，小四，
+英文字符字体consolars 
+
+查看容器进程在宿主机上的PID              docker inspect -f '{{.State.Pid}}' <container>
+
+【PYENV】
+  1)使用pyenv对Python多版本进行管理
+    https://www.jianshu.com/p/2e41b98b38b0
+
+
+	从指定pypi镜像仓库中安装指定版本的库
+	pip install -i https://pypi.mirrors.ustc.edu.cn/simple  paramiko
+	常用仓库地址
+	https://blog.csdn.net/T_Tzz/article/details/89705082
+	
+	pandas-1.1.0-cp37-cp37-win_amd64.whl
+	
+	
+	
+	
+	数据字段 =>
+shardId:1字段表示服务实例编号，为1-9；
+orgNo:32401字段表示地市编码，为32401-32413分别表示南京、无锡、徐州、常州、苏州、南通、连云港、淮安、盐城、扬州、镇江、泰州、宿迁；
+pass_376_qps表示10100020信道任务数；
+pass_698_qps表示10100698信道任务数；
+pass_other_qps表示其它信道任务数；
+pass_common_qps表示普通任务数；
+pass_tc_qps表示透超任务数；
+timeout_376表示10100020信道超时任务数；
+timeout_698表示10100698信道超时任务数；
+timeout_other表示其它信道超时任务数； 
+timestamp字段为记录的时间。
+----------
+
+1).按5分钟一次记录算：
+    一个节点每5分钟写入4K数据
+    一个节点一天：4K*12*24 = 1152K
+    9个节点一天：1152K*9 = 10.125M
+    9个节点保存三天：10.125*3 = 30.375M       
+
+  按1分钟一次记录算：
+    一个节点每1分钟写入4K数据
+    一个节点一天：4K*60*24 = 5.625M
+    9个节点一天：5.625*9 = 50.625M
+    9个节点保存三天：50.625*3 = 151.875M
+	
+2).副本：1份
+
+3).topic名称: unified_task_service_monitor
+
+
+
+
+
+FROM node:13.13-slim
+RUN apt-get update  && apt-get install -y nginx
+RUN mkdir /app
+WORKDIR /app
+COPY . /app/
+ENV PORT 80
+RUN mkdir /var/www/html/dist \
+    && npm install \
+    && npm run build \
+    && cp -r dist/* /var/www/html/dist \
+    && cp -r index.html /var/www/html \
+    && rm -rf /app
+RUN echo "Asia/shanghai" > /etc/timezone
+CMD ["nginx","-g","daemon off;"]
+
+
+
+压缩为*.tar
+tar -cvf test.tar test.txt
+
+*.tar解压缩
+tar -xvf test.tar
+
+压缩为*.gz
+tar -zcvf test.tar.gz test.txt
+
+*.gz解压缩
+tar -zxvf test.tar.gz
+
+
+window :
+c:\windows\system32\drivers\etc\hosts
+
