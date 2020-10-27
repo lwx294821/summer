@@ -117,3 +117,14 @@ tar -zxvf test.tar.gz
 window :
 c:\windows\system32\drivers\etc\hosts
 
+this.$router.push({
+  name: "Input",
+  params:{
+   id:""
+  }
+})
+
+
+
+
+
